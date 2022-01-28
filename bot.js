@@ -24,7 +24,7 @@ const client = new Client({
 client.login(process.env.DISCORD_TOKEN);
 
 client.on("ready", () => {
-  console.log("ready");
+  console.log("Ready!");
 });
 
 client.on("messageCreate", async (messageCreate) => {
@@ -34,6 +34,15 @@ client.on("messageCreate", async (messageCreate) => {
   let countKey = `${keyspace}:count`;
   let confirmedKey = `${keyspace}:confirm`;
   let filterKey = `${keyspace}:filter`;
+
+  //filter the messages
+  let filterDefined = await redis.exists(filterKey);
+  if (!filterDefined) {
+    redis.call("BF.RESERVE", filterKey, 0.01, 10000);
+  }
+
+  let newMessage = await redis.call("BF.ADD", filterKey, messageCreate.content);
+  if (!newMessage) return;
 
   let confirmed = await redis.getbit(confirmedKey, 0);
   if (confirmed) return;

@@ -5,9 +5,6 @@
 <li>Node</li>
 <li>Redis</li>
 
-<h2>Requirements<h2>
-<li>Redis Server</li>
-
 <br>
 <h3>Installation</h3>
 
